@@ -1,0 +1,3 @@
+([('app',
+   '/Users/amanda-alliance/Documents/github/RDM_FileTree/dist/app',
+   'EXECUTABLE')],)
