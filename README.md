@@ -20,8 +20,8 @@ This tool is especially useful for researchers, librarians and data managers who
 
 ## Use (executable)
 
-**Windows users:** Download and run the .exe file located in the dist/ folder.
-**Mac (M1) users:** Download the .app app file located in the dist/ folder.
+**Windows users:** Download and run the .exe file located in the `dist/` folder.
+**Mac (M1) users:** Download the .app app file located in the `dist/` folder.
 
 ## Use (script)
 
@@ -72,6 +72,8 @@ Or run the script with code interpreters like [Visual Studio Code](https://code.
 - **Filter Files/Folders:** Use the search bar to find specific items and use the exclusion options to omit unwanted file types or hidden files.
 
 - **Export the File Tree:** Export the tree as Markdown (.md) or plain text (.txt).
+
+For additional details, please visit the [one-pager](https://alliance-rdm-gdr.github.io/RDM_OnePagers/RDM_TreeGen_en.html)
 
 ---
 

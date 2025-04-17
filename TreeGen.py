@@ -110,8 +110,8 @@ class MainWindow(QMainWindow):
             "<li><b>Select directory</b>: Choose a folder whose tree you want to generate.</li>"
             "<li><b>Include a description</b>: Browse the folder structure and double-click in the description column to add/edit its description.</li>"
             "<li><b>Export buttons</b>: Export the tree as Markdown (.md) or plain text (.txt).</li>"
-            "<li>For further <b>help</b>, click "
-            "<a href='https://www.example.com/help'>here</a>."
+            "<li>For further <b>help</b>, copy and open this "
+            "<a href='https://alliance-rdm-gdr.github.io/RDM_OnePager/RDM_TreeGen_en.html'>link</a>."
             "</div>"
         )
         instructions_label = QLabel(usage_instructions)
