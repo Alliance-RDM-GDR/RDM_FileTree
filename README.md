@@ -21,6 +21,7 @@ This tool is especially useful for researchers, librarians and data managers who
 ## Use (executable)
 
 **Windows users:** Download and run the .exe file located in the `dist/` folder.
+
 **Mac (M1) users:** Download the .app file located in the `dist/` folder.
 
 **Note:** Mac users with intel chip need to run the script locally (see below). 
