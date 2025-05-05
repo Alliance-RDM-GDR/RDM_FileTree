@@ -59,7 +59,7 @@ class FileFilterProxyModel(QSortFilterProxyModel):
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("TreeGen: File tree generator for scientific data")
+        self.setWindowTitle("TreeGen: File tree generator for research data")
         self.resize(1100, 700)
         self.current_directory = None
         self.descriptions = {}
@@ -81,7 +81,7 @@ class MainWindow(QMainWindow):
         main_layout.setSpacing(5)
 
         # ------------ title-------------- -------------
-        title_label = QLabel("TreeGen: File tree generator for scientific data")
+        title_label = QLabel("TreeGen: File tree generator for research data")
         title_font = QFont()
         title_font.setPointSize(16)     # Increase font size as desired
         title_font.setBold(True)
@@ -421,7 +421,7 @@ class MainWindow(QMainWindow):
     # ------------------- About / Info --------------------
     def show_about_info(self):
         about_text = (
-            "TreeGen: File tree generator for scientific data\n"
+            "TreeGen: File tree generator for research data\n"
             "---------------------\n"
             "This application is developed and manteined by the curation team of the Federated Research Data Repository (https://www.frdr-dfdr.ca/repo/) \n\n"
             "For more information, please visit our website or contact us at rdm-gdr\@alliancecan.ca.\n\n"            
