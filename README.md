@@ -69,7 +69,7 @@ For step-by-step guidance, refer to the [Quick Start Tutorial](docs/TreeGen%20Tu
 * [Architecture Overview](docs/architecture.md)
 * [Quick Start Tutorial](docs/QuickStart.md)
 * [Software Management Plan](docs/SoftwareManagementPlan.pdf)
-* [Contributing Guidelines](docs/contributing.md)
+* [Contributing Guidelines](docs/CONTRIBUTING.md)
 
 ---
 
