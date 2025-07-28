@@ -1,93 +1,98 @@
-# TreeGen: File tree generator for research data
+# TreeGen: File Tree Generator for Research Data
+
+**TreeGen** is a cross-platform desktop application developed by the Digital Research Alliance of Canada. It helps researchers, data curators, and technical teams document and share the structure of digital folders in a clear, consistent, and citable format. With TreeGen, users can visualize and annotate the file hierarchy of any directory and export it as structured Markdown or plain text.
+
+---
 
 ## Overview
 
-**TreeGen** is a desktop application built with PyQt5. It allows users to generate, view, and export the file structure of a selected directory with features such as:
+TreeGen simplifies the process of generating file tree documentation by:
+
+* Automatically reading folder and file names and sizes
+* Allowing inline editing of descriptions
+* Generating a live preview
+* Supporting clean export to `.md` and `.txt`
+
+This tool is especially useful for research data management, dataset publication, software documentation, and reproducible workflows.
 
 ---
 
 ## Features
 
-- **Interactive file tree:** Browse an expandable file tree with detailed size information.
-- **Live markdown preview:** See a real-time Markdown representation of your file tree.
-- **Editable descriptions:** Add or edit descriptions for any file or folder to document your dataset content.
-- **Search & filter:** Quickly search for items and exclude specific file types and hidden files/folders.
-- **Export options:** Save the file tree output as either Markdown (`.md`) or Plain Text (`.txt`).
-
-This tool is especially useful for researchers, librarians and data managers who needs to document file structures in an organized manner.
-
----
-
-## Use (executable)
-
-**Windows users:** Download and run the .exe file located in the `dist/` folder.
-
-**Mac (M1) users:** Download the .app file located in the `dist/` folder.
-
-**Note:** Mac users with intel chip need to run the script locally (see below). 
-
-Please visit our **one-pagers** in [English](https://alliance-rdm-gdr.github.io/RDM_OnePagers/RDM_TreeGen_en.html) or [French](https://alliance-rdm-gdr.github.io/RDM_OnePagers/RDM_TreeGen_fr.html) for more information. 
-
-## Use (script)
-
-### Prerequisites
-
-- Python 3.x
-- [PyQt5](https://pypi.org/project/PyQt5/)
-- [humanize](https://pypi.org/project/humanize/)
-
-_Optional (for converting Markdown to HTML in the preview, if needed):_
-
-- [Markdown](https://pypi.org/project/Markdown/)
-
-Install the dependencies using pip:
-
-```bash
-pip install PyQt5 humanize
-# Optional:
-pip install markdown
-```
-
-Clone the Repository
-
-```bash
-git clone https://github.com/Alliance-RDM-GDR/RDM_FileTree
-cd file-tree-generator
-```
+* **Interactive File Tree:** Browse and annotate an expandable folder structure.
+* **Live Markdown Preview:** Real-time rendering of the exported structure.
+* **Search & Filter:** Find specific files, exclude hidden files, or ignore selected extensions.
+* **Export Options:** Save your file tree as Markdown or plain text with an optional summary.
+* **Usage Instructions:** Clear in-app guidance with clickable help links.
+* **Local and Secure:** No internet access required; all operations are local.
 
 ---
 
-## Usage
-Run the application in terminal with:
+## Installation
+
+### Option A: Download the Executable
+
+Download pre-built executables for your system from the [Releases](https://github.com/Alliance-RDM-GDR/RDM_FileTree/releases) page.
+
+### Option B: Run from Source
+
+#### Requirements
+
+* Python 3.10+
+* See `environment.yml` or `requirements.txt` for dependencies.
+
+#### Setup Instructions
 
 ```bash
+git clone https://github.com/Alliance-RDM-GDR/RDM_FileTree.git
+cd RDM_FileTree
+conda env create -f environment.yml
+conda activate treegen-env
 python TreeGen.py
 ```
 
-Or run the script with code interpreters like [Visual Studio Code](https://code.visualstudio.com/).
+---
 
-## How to use
+## Usage Guide
 
-- **Select Directory:** Choose a folder whose tree you want to generate..
+* Launch TreeGen and click **Select Directory**.
+* Navigate through the tree and double-click any file or folder to add a description.
+* Use the search bar or exclusion options to filter what is shown.
+* Click **Export to Markdown** or **Export to Plain Text** to save your documentation.
 
-- **View File Tree:** The left pane displays the file tree while the right pane shows a live Markdown preview.
+For step-by-step guidance, refer to the [Quick Start Tutorial](docs/TreeGen%20Tutorial.md).
 
-- **Edit Descriptions:** Browse the folder structure and double-click in the description column to add/edit its description.
+---
 
-- **Filter Files/Folders:** Use the search bar to find specific items and use the exclusion options to omit unwanted file types or hidden files.
+## Documentation
 
-- **Export the File Tree:** Export the tree as Markdown (.md) or plain text (.txt).
-
-For additional details, please visit the [one-pager](https://alliance-rdm-gdr.github.io/RDM_OnePagers/RDM_TreeGen_en.html)
+* [Architecture Overview](docs/architecture.md)
+* [Quick Start Tutorial](docs/QuickStart.md)
+* [Software Management Plan](docs/SoftwareManagementPlan.pdf)
+* [Contributing Guidelines](docs/contributing.md)
 
 ---
 
 ## License
 
-This project is licensed under the [MIT License](https://opensource.org/license/mit)
+This project is licensed under the [MIT License](LICENSE).
 
 ---
+
+## Citation
+
+If you use TreeGen in your work, please cite it using the information provided in the [`CITATION.cff`](CITATION.cff) file.
+
+TreeGen is also archived and citable via Zenodo: \[DOI placeholder]
+
+---
+
 ## Contact
 
-For questions or further support, please contact rdm-gdr\@alliancecan.ca.
+For support or questions, please contact: [rdm-gdr@alliancecan.ca](mailto:rdm-gdr@alliancecan.ca)
 
+Digital Research Alliance of Canada
+
+---
+
+*Last updated: 2025-07-28*

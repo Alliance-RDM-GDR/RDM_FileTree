@@ -1,0 +1,4 @@
+PyQt5>=5.15
+humanize>=4.6
+markdown>=3.4        
+pyinstaller>=5.13     
