@@ -105,13 +105,15 @@ class MainWindow(QMainWindow):
         usage_layout.addWidget(self.logo_label)
         
         usage_instructions = (
-            "<div style='font-size:16px; line-height:1.3; margin:0; padding:0;'>"
+            "<div style='font-size:16px; line-height:1.0; margin:0; padding:0;'>"
             "<ul style='margin-left:18px; padding-left:0;'>"
             "<li><b>Select directory</b>: Choose a folder whose tree you want to generate.</li>"
             "<li><b>Include a description</b>: Browse the folder structure and double-click in the description column to add/edit its description.</li>"
             "<li><b>Export buttons</b>: Export the tree as Markdown (.md) or plain text (.txt).</li>"
-            "<li>For further <b>help</b>, copy and open this "
-            "<a href='https://alliance-rdm-gdr.github.io/RDM_OnePager/RDM_TreeGen_en.html'>link</a>."
+            "<li>For further <b>help</b>, copy and paste the links to our "
+            "<a href='https://alliance-rdm-gdr.github.io/RDM_OnePager/RDM_TreeGen_en.html'>one-pager</a>"
+            " or "
+            "<a href='https://github.com/Alliance-RDM-GDR/RDM_FileTree'>GitHub repository</a>."
             "</div>"
         )
         instructions_label = QLabel(usage_instructions)

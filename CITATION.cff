@@ -7,7 +7,7 @@ authors:
   - family-names: Manrique-Castano
     given-names: Daniel
     affiliation: Digital Research Alliance of Canada
-    orcid: https://orcid.org/https://orcid.org/0000-0002-1912-1764  
+    orcid: https://orcid.org/0000-0002-1912-1764  
   - name: Digital Research Alliance of Canada
     affiliation: https://alliancecan.ca
 
@@ -20,4 +20,4 @@ keywords:
   - open science
   - data curation
 type: software
-doi: 10.5281/zenodo.xxxxxxx  # Replace with actual Zenodo DOI
+doi: 10.5281/zenodo.17289197
