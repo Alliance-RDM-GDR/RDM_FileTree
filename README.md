@@ -51,6 +51,15 @@ conda activate treegen-env
 python TreeGen.py
 ```
 
+#### Compilation
+
+To compile the app into a single executable file for Windows or Mac, open a terminal window in the app folder and enter the following command:
+
+For windows and MAC:
+
+```bash
+pyinstaller --onefile --windowed TreeGen.py
+```
 ---
 
 ## Usage Guide
@@ -69,7 +78,7 @@ For step-by-step guidance, refer to the [Quick Start Tutorial](docs/TreeGen%20Tu
 * [Architecture Overview](docs/architecture.md)
 * [Quick Start Tutorial](docs/QuickStart.md)
 * [Software Management Plan](docs/SoftwareManagementPlan.pdf)
-* [Contributing Guidelines](docs/contributing.md)
+* [Contributing Guidelines](docs/CONTRIBUTING.md)
 
 ---
 
@@ -83,7 +92,7 @@ This project is licensed under the [MIT License](LICENSE).
 
 If you use TreeGen in your work, please cite it using the information provided in the [`CITATION.cff`](CITATION.cff) file.
 
-TreeGen is also archived and citable via Zenodo: \[DOI placeholder]
+TreeGen is also archived and citable via Zenodo: \[10.5281/zenodo.17289197]
 
 ---
 

@@ -36,7 +36,16 @@ conda activate treegen-env
 python TreeGen.py
 ```
 
----
+
+#### Step 4: Compile the app (optional)
+
+To compile the app into a single executable file for Windows or Mac, open a terminal window in the app folder and enter the following command:
+
+For windows and MAC:
+
+```bash
+pyinstaller --onefile --windowed TreeGen.py
+```
 
 ## 2. User Interface Overview
 
