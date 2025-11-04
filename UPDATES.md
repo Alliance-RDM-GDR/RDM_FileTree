@@ -1,5 +1,12 @@
 # Update Log
 
+## 2025-11-05
+
+- **Bilingual interface & exports:** Added a `Localization` service, language selector, and persistent language preference so the UI and generated Markdown/Text files can be shown in English or French.
+- **Content refresh:** Converted the README and Quick Start guide into bilingual documents and updated architecture notes to describe the localization workflow.
+- **Dependency refresh:** Bumped PyQt5, humanize, markdown, and pyinstaller versions in `environment.yml` and `requirements.txt` to reflect the localization-ready release.
+- **Documentation alignment:** Documented localization flows and session persistence in the architecture overview and update log.
+
 ## 2025-11-04
 
 - **Hidden file parity**: Updated filtering logic to respect Windows hidden/system attributes across the UI and exports and added shared helpers for exclusion rules.

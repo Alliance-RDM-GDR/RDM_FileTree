@@ -6,10 +6,12 @@ import humanize
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
     QFileDialog, QTreeView, QAbstractItemView, QInputDialog, QMessageBox,
-    QTextEdit, QSplitter, QLabel, QLineEdit, QCheckBox, QSizePolicy
+    QTextEdit, QSplitter, QLabel, QLineEdit, QCheckBox, QSizePolicy, QComboBox
 )
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QIcon, QPixmap, QFont
-from PyQt5.QtCore import Qt, QSortFilterProxyModel, QRegExp
+from PyQt5.QtCore import Qt, QSortFilterProxyModel, QRegExp, QSettings, QSignalBlocker
+
+from localization import Localization, DEFAULT_LANGUAGE
 
 LOGO_PATH = "Alliance_Logo.jpeg"
 
@@ -130,7 +132,11 @@ class FileFilterProxyModel(QSortFilterProxyModel):
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("TreeGen: File tree generator for research data")
+        self.settings = QSettings("AllianceRDM", "TreeGen")
+        saved_language = self.settings.value("language", DEFAULT_LANGUAGE)
+        self.localization = Localization(saved_language if isinstance(saved_language, str) else DEFAULT_LANGUAGE)
+
+        self.setWindowTitle(self.localization.tr("app_title"))
         self.resize(1100, 700)
         self.current_directory = None
         self.descriptions = {}
@@ -138,7 +144,14 @@ class MainWindow(QMainWindow):
         self.file_count = 0
         self.total_size = 0
         self.logo_pixmap = None
+        self.title_label = None
+        self.instructions_label = None
+        self.search_label = None
+        self.exclude_ext_label = None
+        self.language_label = None
+        self.language_combo = None
         self.init_ui()
+        self.retranslate_ui()
 
     def init_ui(self):
         # Main widget and layout
@@ -161,13 +174,13 @@ class MainWindow(QMainWindow):
         header_layout.setSpacing(10)
         header_widget.setLayout(header_layout)
 
-        title_label = QLabel("TreeGen: File tree generator for research data")
+        self.title_label = QLabel()
         title_font = QFont()
         title_font.setPointSize(16)
         title_font.setBold(True)
-        title_label.setFont(title_font)
-        title_label.setAlignment(Qt.AlignCenter)
-        header_layout.addWidget(title_label)
+        self.title_label.setFont(title_font)
+        self.title_label.setAlignment(Qt.AlignCenter)
+        header_layout.addWidget(self.title_label)
 
         usage_layout = QHBoxLayout()
         usage_layout.setSpacing(10)
@@ -183,36 +196,30 @@ class MainWindow(QMainWindow):
             self.logo_label.setPixmap(self.logo_pixmap)
         usage_layout.addWidget(self.logo_label)
 
-        usage_instructions = (
-            "<div style='font-size:15px; line-height:1.5; margin:0; padding:0;'>"
-            "<ol style='margin-left:20px; padding-left:0;'>"
-            "<li><b>Select Directory</b>: Choose the folder you want to describe.</li>"
-            "<li><b>Describe</b>: Browse the file tree, double-click the description column, and use the filters as needed.</li>"
-            "<li><b>Export</b>: Review the preview, then export to Markdown or plain text.</li>"
-            "</ol>"
-            "<p style='margin-top:10px; margin-left:40px'>For additional guidance, visit the "
-            "<a href='https://alliance-rdm-gdr.github.io/CUR_Res_OnePagers/RDM_TreeGen_en.html'>TreeGen one-pager</a> "
-            "or the "
-            "<a href='https://github.com/Alliance-RDM-GDR/RDM_FileTree'>GitHub repository</a>.</p>"
-            "</div>"
-        )
-        instructions_label = QLabel(usage_instructions)
-        instructions_label.setWordWrap(True)
-        instructions_label.setTextFormat(Qt.RichText)
-        instructions_label.setTextInteractionFlags(Qt.TextBrowserInteraction)
-        instructions_label.setOpenExternalLinks(True)
-        usage_layout.addWidget(instructions_label)
+        self.instructions_label = QLabel()
+        self.instructions_label.setWordWrap(True)
+        self.instructions_label.setTextFormat(Qt.RichText)
+        self.instructions_label.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        self.instructions_label.setOpenExternalLinks(True)
+        usage_layout.addWidget(self.instructions_label)
         header_layout.addLayout(usage_layout)
 
         top_buttons_layout = QHBoxLayout()
-        self.select_dir_button = QPushButton("Select Directory")
+        self.select_dir_button = QPushButton()
         self.select_dir_button.clicked.connect(self.select_directory)
 
-        self.about_button = QPushButton("About / Info")
+        self.about_button = QPushButton()
         self.about_button.clicked.connect(self.show_about_info)
+
+        self.language_label = QLabel()
+        self.language_combo = QComboBox()
+        self.language_combo.currentIndexChanged.connect(self.on_language_changed)
+        self.language_combo.setSizeAdjustPolicy(QComboBox.AdjustToContents)
 
         top_buttons_layout.addWidget(self.select_dir_button)
         top_buttons_layout.addStretch(1)
+        top_buttons_layout.addWidget(self.language_label)
+        top_buttons_layout.addWidget(self.language_combo)
         top_buttons_layout.addWidget(self.about_button)
         header_layout.addLayout(top_buttons_layout)
 
@@ -220,18 +227,18 @@ class MainWindow(QMainWindow):
         filter_layout.setContentsMargins(0, 0, 0, 0)
 
         self.search_bar = QLineEdit()
-        self.search_bar.setPlaceholderText("Search...")
         self.search_bar.textChanged.connect(self.on_search_text_changed)
-        filter_layout.addWidget(QLabel("Search:"))
+        self.search_label = QLabel()
+        filter_layout.addWidget(self.search_label)
         filter_layout.addWidget(self.search_bar)
 
         self.exclude_ext_input = QLineEdit()
-        self.exclude_ext_input.setPlaceholderText("e.g., .txt, .py")
         self.exclude_ext_input.textChanged.connect(self.on_exclude_ext_changed)
-        filter_layout.addWidget(QLabel("Exclude Extensions:"))
+        self.exclude_ext_label = QLabel()
+        filter_layout.addWidget(self.exclude_ext_label)
         filter_layout.addWidget(self.exclude_ext_input)
 
-        self.exclude_hidden_checkbox = QCheckBox("Exclude Hidden")
+        self.exclude_hidden_checkbox = QCheckBox()
         self.exclude_hidden_checkbox.stateChanged.connect(self.on_exclude_hidden_changed)
         filter_layout.addWidget(self.exclude_hidden_checkbox)
 
@@ -261,7 +268,7 @@ class MainWindow(QMainWindow):
         left_layout.addWidget(self.tree_view)
 
         self.model = QStandardItemModel()
-        self.model.setHorizontalHeaderLabels(["Name", "Size", "Description"])
+        self.model.setHorizontalHeaderLabels(["", "", ""])
 
         self.proxy_model = FileFilterProxyModel()
         self.proxy_model.setSourceModel(self.model)
@@ -286,11 +293,11 @@ class MainWindow(QMainWindow):
         export_layout = QHBoxLayout()
         export_layout.setContentsMargins(0, 5, 0, 0)
 
-        self.export_md_button = QPushButton("Export Markdown (.md)")
+        self.export_md_button = QPushButton()
         self.export_md_button.setEnabled(False)
         self.export_md_button.clicked.connect(self.export_to_markdown)
 
-        self.export_txt_button = QPushButton("Export Plain Text (.txt)")
+        self.export_txt_button = QPushButton()
         self.export_txt_button.setEnabled(False)
         self.export_txt_button.clicked.connect(self.export_to_plain_text)
 
@@ -304,6 +311,63 @@ class MainWindow(QMainWindow):
         vertical_splitter.setStretchFactor(0, 0)
         vertical_splitter.setStretchFactor(1, 1)
         header_widget.setMaximumHeight(header_widget.sizeHint().height())
+
+    def populate_language_combo(self):
+        if self.language_combo is None:
+            return
+        blocker = QSignalBlocker(self.language_combo)
+        self.language_combo.clear()
+        for code in self.localization.available_languages():
+            self.language_combo.addItem(self.localization.language_name(code), code)
+        current_index = self.language_combo.findData(self.localization.language)
+        if current_index < 0:
+            current_index = 0
+        self.language_combo.setCurrentIndex(current_index)
+
+    def retranslate_ui(self):
+        self.setWindowTitle(self.localization.tr("app_title"))
+        if self.title_label is not None:
+            self.title_label.setText(self.localization.tr("app_title"))
+        if self.instructions_label is not None:
+            self.instructions_label.setText(self.localization.tr("usage_instructions"))
+        if self.select_dir_button is not None:
+            self.select_dir_button.setText(self.localization.tr("select_directory_button"))
+        if self.about_button is not None:
+            self.about_button.setText(self.localization.tr("about_button"))
+        if self.language_label is not None:
+            self.language_label.setText(self.localization.tr("language_label"))
+        self.populate_language_combo()
+        if self.search_label is not None:
+            self.search_label.setText(self.localization.tr("search_label"))
+        if self.search_bar is not None:
+            self.search_bar.setPlaceholderText(self.localization.tr("search_placeholder"))
+        if self.exclude_ext_label is not None:
+            self.exclude_ext_label.setText(self.localization.tr("exclude_extensions_label"))
+        if self.exclude_ext_input is not None:
+            self.exclude_ext_input.setPlaceholderText(self.localization.tr("exclude_extensions_placeholder"))
+        if self.exclude_hidden_checkbox is not None:
+            self.exclude_hidden_checkbox.setText(self.localization.tr("exclude_hidden_checkbox"))
+        if self.export_md_button is not None:
+            self.export_md_button.setText(self.localization.tr("export_md_button"))
+        if self.export_txt_button is not None:
+            self.export_txt_button.setText(self.localization.tr("export_txt_button"))
+        self.model.setHorizontalHeaderLabels([
+            self.localization.tr("tree_column_name"),
+            self.localization.tr("tree_column_size"),
+            self.localization.tr("tree_column_description"),
+        ])
+        if self.current_directory:
+            self.update_markdown_preview()
+
+    def on_language_changed(self, index):
+        if not self.language_combo:
+            return
+        lang_code = self.language_combo.itemData(index)
+        if not lang_code or lang_code == self.localization.language:
+            return
+        self.localization.set_language(lang_code)
+        self.settings.setValue("language", lang_code)
+        self.retranslate_ui()
 
     # ------------------- Filter callbacks --------------------
     def on_search_text_changed(self, text):
@@ -322,7 +386,7 @@ class MainWindow(QMainWindow):
 
     # ------------------- Directory selection & Tree building --------------------
     def select_directory(self):
-        directory = QFileDialog.getExistingDirectory(self, "Select Directory")
+        directory = QFileDialog.getExistingDirectory(self, self.localization.tr("select_directory_dialog"))
         if directory:
             self.current_directory = directory
             self.load_descriptions()
@@ -397,7 +461,11 @@ class MainWindow(QMainWindow):
         current_desc = desc_item.text()
 
         text, ok = QInputDialog.getMultiLineText(
-            self, "Add Description", f"Enter description for:\n{item_path}", current_desc)
+            self,
+            self.localization.tr("add_description_title"),
+            self.localization.tr("add_description_prompt", path=item_path),
+            current_desc,
+        )
         if ok:
             desc_item.setText(text)
             self.descriptions[item_path] = text
@@ -419,11 +487,11 @@ class MainWindow(QMainWindow):
         # Summary
         markdown_lines.append('')
         markdown_lines.append('---')
-        markdown_lines.append('**Summary:**')
-        markdown_lines.append(f'- Total folders: {self.folder_count}')
-        markdown_lines.append(f'- Total files: {self.file_count}')
+        markdown_lines.append(self.localization.tr("summary_heading"))
+        markdown_lines.append(self.localization.tr("summary_total_folders", count=self.folder_count))
+        markdown_lines.append(self.localization.tr("summary_total_files", count=self.file_count))
         total_size_hr = humanize.naturalsize(self.total_size)
-        markdown_lines.append(f'- Total size: {total_size_hr}')
+        markdown_lines.append(self.localization.tr("summary_total_size", size=total_size_hr))
 
         return '\n'.join(markdown_lines)
 
@@ -441,18 +509,18 @@ class MainWindow(QMainWindow):
             items = iter_visible_children(path, exclude_hidden, exclude_extensions)
         except PermissionError:
             connector = '\\-- ' if is_last else '|-- '
-            lines.append(f"{prefix}{connector}[Permission Denied]")
+            lines.append(f"{prefix}{connector}{self.localization.tr('permission_denied')}")
             return
         except FileNotFoundError:
             connector = '\\-- ' if is_last else '|-- '
-            lines.append(f"{prefix}{connector}[Not Found]")
+            lines.append(f"{prefix}{connector}{self.localization.tr('not_found')}")
             return
 
         self.folder_count += 1
 
         if not items:
             connector = '\\-- ' if is_last else '|-- '
-            lines.append(f"{prefix}{connector}[Empty Folder]")
+            lines.append(f"{prefix}{connector}{self.localization.tr('empty_folder')}")
             return
 
         connectors = ['|-- '] * (len(items) - 1) + ['\\-- ']
@@ -491,14 +559,21 @@ class MainWindow(QMainWindow):
     # ------------------- Exporters --------------------
     def export_to_markdown(self):
         if not self.current_directory:
-            QMessageBox.warning(self, "No Directory Selected", "Please select a directory first.")
+            QMessageBox.warning(
+                self,
+                self.localization.tr("no_directory_title"),
+                self.localization.tr("no_directory_message"),
+            )
             return
         options = QFileDialog.Options()
         file_path, _ = QFileDialog.getSaveFileName(
             self,
-            "Save Markdown File",
-            os.path.join(self.current_directory, "file_tree.md"),
-            "Markdown Files (*.md);;All Files (*)",
+            self.localization.tr("save_markdown_dialog"),
+            os.path.join(
+                self.current_directory,
+                self.localization.tr("save_markdown_default_filename"),
+            ),
+            self.localization.tr("markdown_file_filter"),
             options=options
         )
         if file_path:
@@ -506,20 +581,35 @@ class MainWindow(QMainWindow):
             try:
                 with open(file_path, 'w', encoding='utf-8') as f:
                     f.write(md_content)
-                QMessageBox.information(self, "Export Successful", f"File tree exported to {file_path}")
+                QMessageBox.information(
+                    self,
+                    self.localization.tr("export_success_title"),
+                    self.localization.tr("export_success_message", path=file_path),
+                )
             except Exception as e:
-                QMessageBox.critical(self, "Export Failed", f"An error occurred:\n{str(e)}")
+                QMessageBox.critical(
+                    self,
+                    self.localization.tr("export_failed_title"),
+                    self.localization.tr("export_failed_message", error=str(e)),
+                )
 
     def export_to_plain_text(self):
         if not self.current_directory:
-            QMessageBox.warning(self, "No Directory Selected", "Please select a directory first.")
+            QMessageBox.warning(
+                self,
+                self.localization.tr("no_directory_title"),
+                self.localization.tr("no_directory_message"),
+            )
             return
         options = QFileDialog.Options()
         file_path, _ = QFileDialog.getSaveFileName(
             self,
-            "Save Plain Text File",
-            os.path.join(self.current_directory, "file_tree.txt"),
-            "Text Files (*.txt);;All Files (*)",
+            self.localization.tr("save_plain_text_dialog"),
+            os.path.join(
+                self.current_directory,
+                self.localization.tr("save_plain_text_default_filename"),
+            ),
+            self.localization.tr("plain_text_file_filter"),
             options=options
         )
         if file_path:
@@ -527,21 +617,26 @@ class MainWindow(QMainWindow):
             try:
                 with open(file_path, 'w', encoding='utf-8') as f:
                     f.write(txt_content)
-                QMessageBox.information(self, "Export Successful", f"File tree exported to {file_path}")
+                QMessageBox.information(
+                    self,
+                    self.localization.tr("export_success_title"),
+                    self.localization.tr("export_success_message", path=file_path),
+                )
             except Exception as e:
-                QMessageBox.critical(self, "Export Failed", f"An error occurred:\n{str(e)}")
+                QMessageBox.critical(
+                    self,
+                    self.localization.tr("export_failed_title"),
+                    self.localization.tr("export_failed_message", error=str(e)),
+                )
 
     # ------------------- About / Info --------------------
     def show_about_info(self):
-        about_text = (
-            "TreeGen: File tree generator for research data\n"
-            "---------------------\n"
-            "This application is developed and maintained by the Curation Services team of the Digital Research Alliance of Canada (https://alliancecan.ca).\n\n"
-            "Including a clear file tree helps repositories evaluate submissions faster. Consider FRDR (https://www.frdr-dfdr.ca/repo/) "
-            "and Borealis (https://borealisdata.ca) when sharing Canadian research data.\n\n"
-            "For more information or support, contact us at rdm-gdr@alliancecan.ca.\n"
+        about_text = self.localization.tr("about_dialog_body")
+        QMessageBox.information(
+            self,
+            self.localization.tr("about_dialog_title"),
+            about_text,
         )
-        QMessageBox.information(self, "About / Info", about_text)
 
 
 if __name__ == "__main__":

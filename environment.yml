@@ -4,9 +4,9 @@ channels:
   - defaults
 dependencies:
   - python=3.10
-  - pyqt=5.15
-  - humanize
+  - pyqt>=5.15.9
+  - humanize>=4.9
   - pip
   - pip:
-      - markdown
-      - pyinstaller
+      - markdown>=3.5
+      - pyinstaller>=6.6
