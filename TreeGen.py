@@ -1,14 +1,16 @@
 import sys
 import os
 import json
+import csv
 import ctypes
 import humanize
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
     QFileDialog, QTreeView, QAbstractItemView, QInputDialog, QMessageBox,
-    QTextEdit, QSplitter, QLabel, QLineEdit, QCheckBox, QSizePolicy, QComboBox
+    QTextEdit, QSplitter, QLabel, QLineEdit, QCheckBox, QSizePolicy, QComboBox,
+    QShortcut
 )
-from PyQt5.QtGui import QStandardItemModel, QStandardItem, QIcon, QPixmap, QFont
+from PyQt5.QtGui import QStandardItemModel, QStandardItem, QIcon, QPixmap, QFont, QKeySequence
 from PyQt5.QtCore import Qt, QSortFilterProxyModel, QRegExp, QSettings, QSignalBlocker
 
 from localization import Localization, DEFAULT_LANGUAGE
@@ -204,6 +206,14 @@ class MainWindow(QMainWindow):
         usage_layout.addWidget(self.instructions_label)
         header_layout.addLayout(usage_layout)
 
+        self.security_label = QLabel()
+        self.security_label.setAlignment(Qt.AlignCenter)
+        self.security_label.setTextFormat(Qt.RichText)
+        self.security_label.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        self.security_label.setOpenExternalLinks(True)
+        self.security_label.setStyleSheet("QLabel { color: #d9534f; font-weight: bold; margin-top: 5px; }") # Red/Warning color
+        header_layout.addWidget(self.security_label)
+
         top_buttons_layout = QHBoxLayout()
         self.select_dir_button = QPushButton()
         self.select_dir_button.clicked.connect(self.select_directory)
@@ -265,7 +275,18 @@ class MainWindow(QMainWindow):
         self.tree_view = QTreeView()
         self.tree_view.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tree_view.doubleClicked.connect(self.add_description)
+        
+        # Accessibility: Keyboard shortcuts
+        self.edit_shortcut_f2 = QShortcut(QKeySequence(Qt.Key_F2), self.tree_view)
+        self.edit_shortcut_f2.activated.connect(self.edit_current_description)
+        
+        self.edit_shortcut_enter = QShortcut(QKeySequence(Qt.Key_Return), self.tree_view)
+        self.edit_shortcut_enter.activated.connect(self.handle_enter_key)
+        
         left_layout.addWidget(self.tree_view)
+
+        left_layout.addWidget(self.tree_view)
+
 
         self.model = QStandardItemModel()
         self.model.setHorizontalHeaderLabels(["", "", ""])
@@ -295,16 +316,38 @@ class MainWindow(QMainWindow):
 
         self.export_md_button = QPushButton()
         self.export_md_button.setEnabled(False)
-        self.export_md_button.clicked.connect(self.export_to_markdown)
+        self.export_md_button.clicked.connect(self.export_markdown)
 
         self.export_txt_button = QPushButton()
         self.export_txt_button.setEnabled(False)
-        self.export_txt_button.clicked.connect(self.export_to_plain_text)
+        self.export_txt_button.clicked.connect(self.export_plain_text)
+
+        self.export_csv_button = QPushButton()
+        self.export_csv_button.setEnabled(False)
+        self.export_csv_button.clicked.connect(self.export_csv)
 
         export_layout.addStretch(1)
         export_layout.addWidget(self.export_md_button)
         export_layout.addWidget(self.export_txt_button)
+        export_layout.addWidget(self.export_csv_button)
+        export_layout.addWidget(self.export_csv_button)
         content_layout.addLayout(export_layout)
+
+        # Accessibility: Accessible Names (Moved here to ensure buttons exist)
+        self.select_dir_button.setAccessibleName("Select Directory")
+        self.select_dir_button.setAccessibleDescription("Open a dialog to choose the folder to describe.")
+        
+        self.about_button.setAccessibleName("About")
+        self.about_button.setAccessibleDescription("Show application information.")
+        
+        self.export_md_button.setAccessibleName("Export Markdown")
+        self.export_txt_button.setAccessibleName("Export Plain Text")
+        self.export_csv_button.setAccessibleName("Export CSV")
+        
+        self.search_bar.setAccessibleName("Search")
+        self.exclude_ext_input.setAccessibleName("Exclude Extensions")
+        self.exclude_hidden_checkbox.setAccessibleName("Exclude Hidden Files")
+
 
         vertical_splitter.addWidget(header_widget)
         vertical_splitter.addWidget(content_widget)
@@ -330,6 +373,8 @@ class MainWindow(QMainWindow):
             self.title_label.setText(self.localization.tr("app_title"))
         if self.instructions_label is not None:
             self.instructions_label.setText(self.localization.tr("usage_instructions"))
+        if self.security_label is not None:
+            self.security_label.setText(self.localization.tr("security_note"))
         if self.select_dir_button is not None:
             self.select_dir_button.setText(self.localization.tr("select_directory_button"))
         if self.about_button is not None:
@@ -351,6 +396,8 @@ class MainWindow(QMainWindow):
             self.export_md_button.setText(self.localization.tr("export_md_button"))
         if self.export_txt_button is not None:
             self.export_txt_button.setText(self.localization.tr("export_txt_button"))
+        if self.export_csv_button is not None:
+            self.export_csv_button.setText(self.localization.tr("export_csv_button"))
         self.model.setHorizontalHeaderLabels([
             self.localization.tr("tree_column_name"),
             self.localization.tr("tree_column_size"),
@@ -393,6 +440,7 @@ class MainWindow(QMainWindow):
             self.populate_tree()
             self.export_md_button.setEnabled(True)
             self.export_txt_button.setEnabled(True)
+            self.export_csv_button.setEnabled(True) # Enabled CSV button
             self.update_markdown_preview()
 
     def load_descriptions(self):
@@ -453,6 +501,17 @@ class MainWindow(QMainWindow):
         exclude_extensions = self.proxy_model.exclude_extensions if respect_filters else []
         return calculate_folder_size(path, exclude_hidden, exclude_extensions)
 
+    def handle_enter_key(self):
+        # Enter key should toggle expansion or edit description depending on context.
+        # Standard TreeView behavior maps Enter to edit, but we want our custom edit.
+        # For directory navigation, Left/Right arrows are standard.
+        self.edit_current_description()
+
+    def edit_current_description(self):
+        index = self.tree_view.currentIndex()
+        if index.isValid():
+            self.add_description(index)
+
     def add_description(self, index):
         source_index = self.proxy_model.mapToSource(index)
         item = self.model.itemFromIndex(source_index.sibling(source_index.row(), 0))
@@ -494,6 +553,14 @@ class MainWindow(QMainWindow):
         markdown_lines.append(self.localization.tr("summary_total_size", size=total_size_hr))
 
         return '\n'.join(markdown_lines)
+
+    def generate_plain_text_content(self):
+        # For plain text, we can reuse the markdown generation logic,
+        # but it might be desirable to have a separate, simpler format.
+        # For now, we'll just use the markdown content.
+        # If a distinct plain text format is needed, this method should be
+        # implemented with its own build_plain_text helper.
+        return self.generate_markdown_content()
 
     def update_markdown_preview(self):
         if self.current_directory:
@@ -556,8 +623,43 @@ class MainWindow(QMainWindow):
                 new_prefix = prefix + ('    ' if connector == '\\-- ' else '|   ')
                 self.build_tree(item_path, lines, prefix=new_prefix, is_last=(connector == '\\-- '))
 
+    def generate_csv_content(self, writer):
+        self.build_csv_rows(self.current_directory, writer)
+
+    def build_csv_rows(self, path, writer):
+        exclude_hidden = self.proxy_model.exclude_hidden
+        exclude_extensions = self.proxy_model.exclude_extensions
+
+        try:
+            items = iter_visible_children(path, exclude_hidden, exclude_extensions)
+        except (PermissionError, FileNotFoundError):
+            return
+
+        for index, (item_name, item_path, is_dir) in enumerate(items):
+            # Calculate logic
+            size = 0
+            type_str = "File"
+            if is_dir:
+                type_str = "Directory"
+                size = self.get_folder_size(item_path, respect_filters=True)
+            else:
+                try:
+                    size = os.path.getsize(item_path)
+                except (OSError, PermissionError):
+                    size = 0
+            
+            description = self.descriptions.get(item_path, "")
+            
+            # Relative path for cleaner export (optional, but requested implicitly by 'structure')
+            rel_path = os.path.relpath(item_path, self.current_directory)
+            
+            writer.writerow([rel_path, type_str, item_name, size, description])
+
+            if is_dir:
+                self.build_csv_rows(item_path, writer)
+
     # ------------------- Exporters --------------------
-    def export_to_markdown(self):
+    def export_markdown(self):
         if not self.current_directory:
             QMessageBox.warning(
                 self,
@@ -593,40 +695,73 @@ class MainWindow(QMainWindow):
                     self.localization.tr("export_failed_message", error=str(e)),
                 )
 
-    def export_to_plain_text(self):
+    def export_plain_text(self):
         if not self.current_directory:
             QMessageBox.warning(
                 self,
                 self.localization.tr("no_directory_title"),
-                self.localization.tr("no_directory_message"),
+                self.localization.tr("no_directory_message")
             )
             return
-        options = QFileDialog.Options()
+
+        default_filename = self.localization.tr("save_plain_text_default_filename")
         file_path, _ = QFileDialog.getSaveFileName(
             self,
             self.localization.tr("save_plain_text_dialog"),
-            os.path.join(
-                self.current_directory,
-                self.localization.tr("save_plain_text_default_filename"),
-            ),
-            self.localization.tr("plain_text_file_filter"),
-            options=options
+            os.path.join(self.current_directory, default_filename),
+            self.localization.tr("plain_text_file_filter")
         )
+
         if file_path:
-            txt_content = self.generate_markdown_content()
+            content = self.generate_plain_text_content()
             try:
                 with open(file_path, 'w', encoding='utf-8') as f:
-                    f.write(txt_content)
+                    f.write(content)
                 QMessageBox.information(
                     self,
                     self.localization.tr("export_success_title"),
-                    self.localization.tr("export_success_message", path=file_path),
+                    self.localization.tr("export_success_message", path=file_path)
                 )
             except Exception as e:
                 QMessageBox.critical(
                     self,
                     self.localization.tr("export_failed_title"),
-                    self.localization.tr("export_failed_message", error=str(e)),
+                    self.localization.tr("export_failed_message", error=str(e))
+                )
+
+    def export_csv(self):
+        if not self.current_directory:
+            QMessageBox.warning(
+                self,
+                self.localization.tr("no_directory_title"),
+                self.localization.tr("no_directory_message")
+            )
+            return
+
+        default_filename = self.localization.tr("save_csv_default_filename")
+        file_path, _ = QFileDialog.getSaveFileName(
+            self,
+            self.localization.tr("save_csv_dialog"),
+            os.path.join(self.current_directory, default_filename),
+            self.localization.tr("csv_file_filter")
+        )
+
+        if file_path:
+            try:
+                with open(file_path, 'w', newline='', encoding='utf-8') as f:
+                    writer = csv.writer(f)
+                    writer.writerow(['Path', 'Type', 'Name', 'Size (Bytes)', 'Description'])
+                    self.generate_csv_content(writer)
+                QMessageBox.information(
+                    self,
+                    self.localization.tr("export_success_title"),
+                    self.localization.tr("export_success_message", path=file_path)
+                )
+            except Exception as e:
+                QMessageBox.critical(
+                    self,
+                    self.localization.tr("export_failed_title"),
+                    self.localization.tr("export_failed_message", error=str(e))
                 )
 
     # ------------------- About / Info --------------------

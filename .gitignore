@@ -1,2 +1,22 @@
+# Python / PyInstaller
+__pycache__/
+*.pyc
+build/
+dist/
+.pytest_cache/
+app.spec
+
+# IDEs
+.vscode/
+.idea/
+
+# OS specific
 .DS_Store
+Thumbs.db
+
+# App specific
+.descriptions.json
 SMP_FileTree.docx
+File Tree Generator feedback.pdf
+README.html
+.Rhistory

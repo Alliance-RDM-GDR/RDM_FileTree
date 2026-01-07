@@ -11,18 +11,19 @@ TRANSLATIONS: Dict[str, Dict[str, str]] = {
     "en": {
         "app_title": "TreeGen: File tree generator for research data",
         "usage_instructions": (
-            "<div style='font-size:15px; line-height:1.5; margin:0; padding:0;'>"
-            "<ol style='margin-left:20px; padding-left:0;'>"
-            "<li><b>Select Directory</b>: Choose the folder you want to describe.</li>"
-            "<li><b>Describe</b>: Browse the file tree, double-click the description column, and use the filters as needed.</li>"
-            "<li><b>Export</b>: Review the preview, then export to Markdown or plain text.</li>"
-            "</ol>"
-            "<p style='margin-top:10px; margin-left:40px'>For additional guidance, visit the "
+            "<div style='font-size:15px; line-height:1.4; margin:0; padding:0;'>"
+            "<table border='0' cellspacing='0' cellpadding='2' style='margin-top:5px; margin-bottom:5px; margin-left:10px;'>"
+            "<tr><td valign='top' width='20'>1.</td><td><b>Select Directory</b>: Choose the folder you want to describe.</td></tr>"
+            "<tr><td valign='top' width='20'>2.</td><td><b>Describe</b>: Browse the file tree, double-click the description column, and use the filters as needed.</td></tr>"
+            "<tr><td valign='top' width='20'>3.</td><td><b>Export</b>: Review the preview, then export to Markdown or plain text.</td></tr>"
+            "</table>"
+            "<p style='margin-top:5px; margin-left:40px'>For additional guidance, visit the "
             "<a href='https://alliance-rdm-gdr.github.io/CUR_Res_OnePagers/RDM_TreeGen_en.html'>TreeGen one-pager</a> "
             "or the "
             "<a href='https://github.com/Alliance-RDM-GDR/RDM_FileTree'>GitHub repository</a>.</p>"
             "</div>"
         ),
+        "security_note": "<b>Security & Privacy:</b> Please review our <a href='https://github.com/Alliance-RDM-GDR/RDM_FileTree#security--data-privacy'>guidelines on sensitive data</a>.",
         "select_directory_button": "Select Directory",
         "about_button": "About / Info",
         "language_label": "Language:",
@@ -38,6 +39,7 @@ TRANSLATIONS: Dict[str, Dict[str, str]] = {
         "tree_column_description": "Description",
         "export_md_button": "Export Markdown (.md)",
         "export_txt_button": "Export Plain Text (.txt)",
+        "export_csv_button": "Export CSV (.csv)",
         "select_directory_dialog": "Select Directory",
         "add_description_title": "Add Description",
         "add_description_prompt": "Enter description for:\n{path}",
@@ -56,6 +58,9 @@ TRANSLATIONS: Dict[str, Dict[str, str]] = {
         "save_plain_text_dialog": "Save Plain Text File",
         "save_plain_text_default_filename": "file_tree.txt",
         "plain_text_file_filter": "Text Files (*.txt);;All Files (*)",
+        "save_csv_dialog": "Save CSV File",
+        "save_csv_default_filename": "file_tree.csv",
+        "csv_file_filter": "CSV Files (*.csv);;All Files (*)",
         "export_success_title": "Export Successful",
         "export_success_message": "File tree exported to {path}",
         "export_failed_title": "Export Failed",
@@ -75,18 +80,19 @@ TRANSLATIONS: Dict[str, Dict[str, str]] = {
     "fr": {
         "app_title": "TreeGen : Générateur d'arborescence de fichiers pour les données de recherche",
         "usage_instructions": (
-            "<div style='font-size:15px; line-height:1.5; margin:0; padding:0;'>"
-            "<ol style='margin-left:20px; padding-left:0;'>"
-            "<li><b>Sélectionner un dossier</b> : Choisissez le dossier que vous souhaitez décrire.</li>"
-            "<li><b>Décrire</b> : Parcourez l'arborescence, double-cliquez la colonne Description et utilisez les filtres au besoin.</li>"
-            "<li><b>Exporter</b> : Vérifiez l'aperçu, puis exportez en Markdown ou en texte brut.</li>"
-            "</ol>"
-            "<p style='margin-top:10px; margin-left:40px'>Pour plus de détails, consultez la "
+            "<div style='font-size:15px; line-height:1.4; margin:0; padding:0;'>"
+            "<table border='0' cellspacing='0' cellpadding='2' style='margin-top:5px; margin-bottom:5px; margin-left:10px;'>"
+            "<tr><td valign='top' width='20'>1.</td><td><b>Sélectionner un dossier</b> : Choisissez le dossier que vous souhaitez décrire.</td></tr>"
+            "<tr><td valign='top' width='20'>2.</td><td><b>Décrire</b> : Parcourez l'arborescence, double-cliquez la colonne Description et utilisez les filtres au besoin.</td></tr>"
+            "<tr><td valign='top' width='20'>3.</td><td><b>Exporter</b> : Vérifiez l'aperçu, puis exportez en Markdown ou en texte brut.</td></tr>"
+            "</table>"
+            "<p style='margin-top:5px; margin-left:40px'>Pour plus de détails, consultez la "
             "<a href='https://alliance-rdm-gdr.github.io/CUR_Res_OnePagers/RDM_TreeGen_en.html'>fiche TreeGen</a> "
             "ou le "
             "<a href='https://github.com/Alliance-RDM-GDR/RDM_FileTree'>dépôt GitHub</a>.</p>"
             "</div>"
         ),
+        "security_note": "<b>Sécurité et confidentialité :</b> Veuillez consulter nos <a href='https://github.com/Alliance-RDM-GDR/RDM_FileTree#s%C3%A9curit%C3%A9-et-confidentialit%C3%A9-des-donn%C3%A9es'>directives sur les données sensibles</a>.",
         "select_directory_button": "Sélectionner un dossier",
         "about_button": "À propos / Info",
         "language_label": "Langue :",
@@ -102,6 +108,7 @@ TRANSLATIONS: Dict[str, Dict[str, str]] = {
         "tree_column_description": "Description",
         "export_md_button": "Exporter en Markdown (.md)",
         "export_txt_button": "Exporter en texte brut (.txt)",
+        "export_csv_button": "Exporter en CSV (.csv)",
         "select_directory_dialog": "Sélectionner un dossier",
         "add_description_title": "Ajouter une description",
         "add_description_prompt": "Saisissez la description pour :\n{path}",
@@ -120,6 +127,9 @@ TRANSLATIONS: Dict[str, Dict[str, str]] = {
         "save_plain_text_dialog": "Enregistrer le fichier texte",
         "save_plain_text_default_filename": "arborescence.txt",
         "plain_text_file_filter": "Fichiers texte (*.txt);;Tous les fichiers (*)",
+        "save_csv_dialog": "Enregistrer le fichier CSV",
+        "save_csv_default_filename": "arborescence.csv",
+        "csv_file_filter": "Fichiers CSV (*.csv);;Tous les fichiers (*)",
         "export_success_title": "Exportation réussie",
         "export_success_message": "Arborescence exportée vers {path}",
         "export_failed_title": "Échec de l'exportation",

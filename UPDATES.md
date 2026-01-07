@@ -1,5 +1,16 @@
 # Update Log
 
+## 2026-01-07
+
+- **Security Audit Response:** Implemented recommendations from the cybersecurity audit, including a new "Security & Data Privacy" section in the README and Quick Start guide (bilingual).
+- **Dependency Management:** Tightened version constraints in `requirements.txt` and `environment.yml` to minimize supply chain risks (`~=` pinning).
+- **Build Documentation:** Added `docs/BUILD.md` detailing the manual build process for reproducibility in both English and French.
+- **Update Awareness:** Clarified that GitHub Releases is the official source for updates and documented the "unsigned" nature of current executables.
+- **UI Update:** Added a prominent "Security & Privacy" warning link in the application header pointing to the new README safety guidelines.
+- **New Feature:** Added CSV Export capability (`.csv`) including file type, size, and descriptions.
+- **DevOps:** Implemented automated GitHub Actions workflow for cross-platform builds (Windows, macOS, Ubuntu).
+- **Accessibility:** Added `F2`/`Enter` keyboard shortcuts for editing descriptions and improved screen reader labels for buttons.
+
 ## 2025-11-05
 
 - **Bilingual interface & exports:** Added a `Localization` service, language selector, and persistent language preference so the UI and generated Markdown/Text files can be shown in English or French.

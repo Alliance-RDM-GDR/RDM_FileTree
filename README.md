@@ -5,6 +5,7 @@
 **TreeGen** is a cross-platform desktop application developed by the Digital Research Alliance of Canada. It helps researchers, data curators, and technical teams document and share folder hierarchies in a clear, consistent, and citable format. Users can visualize a directory, add contextual descriptions, and export the structure as Markdown or plain text, with full support for English and French.
 
 ---
+
 ### Overview
 
 TreeGen streamlines file tree documentation by:
@@ -18,6 +19,7 @@ TreeGen streamlines file tree documentation by:
 This workflow is ideal for research data management, dataset publication, software documentation, and reproducible workflows.
 
 ---
+
 ### Features
 
 - **Interactive Tree:** Browse and annotate an expandable hierarchy.
@@ -28,10 +30,18 @@ This workflow is ideal for research data management, dataset publication, softwa
 - **Offline Friendly:** All processing happens locally; no internet connection is required.
 
 ---
+
+- **Use on Unmanaged Devices:** Be cautious when scanning sensitive data on personal or shared devices, as standard security controls may vary.
+
+---
+
 ### Installation
 
 **Option A - Download the Executable**  
 Grab the installer or standalone executable for your platform from the [Releases](https://github.com/Alliance-RDM-GDR/RDM_FileTree/releases) page.
+
+> [!NOTE] > **Official Source**: GitHub Releases is the **only** official source for TreeGen executables.
+> **Security Warning**: Binaries are currently **unsigned**. You may need to bypass OS security warnings (e.g., "Unidentified Developer" on macOS or SmartScreen on Windows) to run them.
 
 **Option B - Run from Source**
 
@@ -45,13 +55,25 @@ conda activate treegen-env
 python TreeGen.py
 ```
 
-**Build an executable (optional)**
-
-```bash
-pyinstaller --onefile --windowed TreeGen.py
-```
+**Build from Source (Reproducible Build)**  
+For instructions on building the executable yourself relative to the source code, see [Building TreeGen](docs/BUILD.md).
 
 ---
+
+### Security & Data Privacy
+
+- **Metadata Exposure**: TreeGen lists file names and folder paths. While it does _not_ access file contents, be aware that directory structures themselves can reveal sensitive information (e.g., project code names, participant IDs).
+- **Persistent Annotations**: Descriptions are stored in a hidden file named `.descriptions.json` inside the scanned directory. This file **remains unless manually deleted**.
+- **Version Control**: If you are using Git, add `.descriptions.json` to your `.gitignore` file to prevent accidentally committing internal notes or descriptions to public repositories.
+
+---
+
+### Updates
+
+TreeGen does not have an automatic update mechanism. Please check the [Releases](https://github.com/Alliance-RDM-GDR/RDM_FileTree/releases) page periodically for new versions and security fixes. All updates will be documented in [UPDATES.md](UPDATES.md).
+
+---
+
 ### Usage Guide
 
 1. Launch TreeGen and click **Select Directory** to load a folder. Existing annotations in `.descriptions.json` are restored automatically.
@@ -62,6 +84,7 @@ pyinstaller --onefile --windowed TreeGen.py
 For more detail, see the [Quick Start Tutorial](docs/QuickStart.md).
 
 ---
+
 ### Documentation
 
 - [Architecture Overview](docs/architecture.md)
@@ -71,16 +94,19 @@ For more detail, see the [Quick Start Tutorial](docs/QuickStart.md).
 - [Contributing Guidelines](docs/CONTRIBUTING.md)
 
 ---
+
 ### License
 
 TreeGen is released under the [MIT License](LICENSE).
 
 ---
+
 ### Citation
 
 If TreeGen supports your work, please cite it using the metadata in [`CITATION.cff`](CITATION.cff) or reference the Zenodo archive (10.5281/zenodo.17289197).
 
 ---
+
 ### Contact
 
 Questions or feedback? Email [rdm-gdr@alliancecan.ca](mailto:rdm-gdr@alliancecan.ca).
@@ -94,6 +120,7 @@ Digital Research Alliance of Canada
 **TreeGen** est une application de bureau multiplateforme développée par l'Alliance de recherche numérique du Canada. Elle aide les chercheuses, chercheurs, conservateurs et équipes techniques à documenter et partager la structure de leurs dossiers de façon claire, uniforme et citable. L'utilisateur peut visualiser un répertoire, ajouter des descriptions contextuelles et exporter l'arborescence en Markdown ou en texte brut, avec prise en charge complète du français et de l'anglais.
 
 ---
+
 ### Aperçu
 
 TreeGen simplifie la documentation d'arborescences en :
@@ -107,6 +134,7 @@ TreeGen simplifie la documentation d'arborescences en :
 Cette approche est idéale pour la gestion des données de recherche, la publication de jeux de données, la documentation logicielle et les flux de travail reproductibles.
 
 ---
+
 ### Fonctionnalités
 
 - **Arborescence interactive :** Parcourez et annotez une hiérarchie extensible.
@@ -117,10 +145,14 @@ Cette approche est idéale pour la gestion des données de recherche, la publica
 - **Utilisation hors ligne :** Toutes les opérations sont effectuées localement, sans connexion Internet.
 
 ---
+
 ### Installation
 
 **Option A - Télécharger l'exécutable**  
 Téléchargez l'installateur ou l'exécutable autonome correspondant à votre plateforme depuis la page des [versions](https://github.com/Alliance-RDM-GDR/RDM_FileTree/releases).
+
+> [!NOTE] > **Source officielle** : Les versions GitHub sont la **seule** source officielle pour les exécutables TreeGen.
+> **Avertissement de sécurité** : Les binaires ne sont actuellement **pas signés**. Vous devrez peut-être contourner les avertissements de sécurité du système d'exploitation (par ex. « Développeur non identifié » sur macOS ou SmartScreen sur Windows) pour les exécuter.
 
 **Option B - Lancer depuis le code source**
 
@@ -134,13 +166,25 @@ conda activate treegen-env
 python TreeGen.py
 ```
 
-**Construire un exécutable (optionnel)**
-
-```bash
-pyinstaller --onefile --windowed TreeGen.py
-```
+**Construire depuis la source (Build reproductible)**
+Pour savoir comment construire vous-même l'exécutable à partir du code source, consultez [Construire TreeGen](docs/BUILD.md).
 
 ---
+
+### Sécurité et confidentialité des données
+
+- **Exposition des métadonnées** : TreeGen liste les noms de fichiers et les chemins des dossiers. Bien qu'il n'accède _pas_ au contenu des fichiers, soyez conscient que la structure des répertoires elle-même peut révéler des informations sensibles (par ex. noms de code de projets, identifiants de participants).
+- **Annotations persistantes** : Les descriptions sont stockées dans un fichier caché nommé `.descriptions.json` à l'intérieur du répertoire analysé. Ce fichier **reste présent à moins d'être supprimé manuellement**.
+- **Contrôle de version** : Si vous utilisez Git, ajoutez `.descriptions.json` à votre fichier `.gitignore` pour éviter de commettre accidentellement des notes internes ou des descriptions dans des dépôts publics.
+
+---
+
+### Mises à jour
+
+TreeGen ne dispose pas de mécanisme de mise à jour automatique. Veuillez consulter périodiquement la page des [versions](https://github.com/Alliance-RDM-GDR/RDM_FileTree/releases) pour les nouvelles versions et les correctifs de sécurité. Toutes les mises à jour seront documentées dans [UPDATES.md](UPDATES.md).
+
+---
+
 ### Guide d'utilisation
 
 1. Lancez TreeGen et cliquez sur **Sélectionner un dossier** pour charger un répertoire. Les annotations existantes dans `.descriptions.json` sont restaurées automatiquement.
@@ -151,6 +195,7 @@ pyinstaller --onefile --windowed TreeGen.py
 Pour plus de détails, consultez le [Tutoriel de démarrage rapide](docs/QuickStart.md).
 
 ---
+
 ### Documentation
 
 - [Aperçu de l'architecture](docs/architecture.md)
@@ -158,18 +203,22 @@ Pour plus de détails, consultez le [Tutoriel de démarrage rapide](docs/QuickSt
 - [Plan de gestion logicielle](docs/SoftwareManagementPlan.pdf)
 - [Journal des mises à jour](UPDATES.md)
 - [Guide de contribution](docs/CONTRIBUTING.md)
+- [Instructions de construction](docs/BUILD.md)
 
 ---
+
 ### Licence
 
 TreeGen est distribué sous la [licence MIT](LICENSE).
 
 ---
+
 ### Citation
 
 Si TreeGen vous est utile, veuillez le citer à l'aide des informations contenues dans [`CITATION.cff`](CITATION.cff) ou du DOI Zenodo (10.5281/zenodo.17289197).
 
 ---
+
 ### Contact
 
 Pour toute question ou rétroaction, écrivez à [rdm-gdr@alliancecan.ca](mailto:rdm-gdr@alliancecan.ca).
@@ -178,4 +227,4 @@ Alliance de recherche numérique du Canada
 
 ---
 
-*Last updated / Dernière mise à jour : 2025-11-05*
+_Last updated / Dernière mise à jour : 2026-01-07_
