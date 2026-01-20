@@ -1,3 +1,0 @@
-([('TreeGen',
-   '/Users/amanda-alliance/Documents/github/RDM_FileTree/dist/TreeGen',
-   'EXECUTABLE')],)
